@@ -7,7 +7,7 @@ function ProductList({ products, category, onAddToCart, favorites, onToggleFavor
     : products.filter(product => product.category === category);
 
   return (
-    <div className="px-4">
+    <div className="px-4 py-4">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredProducts.map((product) => (
           <ProductCard

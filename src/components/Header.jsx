@@ -18,7 +18,7 @@ function Header({ onSearch, favorites, onToggleFavorite, onProductClick, searchR
       <div className="flex items-center justify-between">
         <a href="/" className="flex items-center">
           <img
-            src="/placeholder.svg"
+            src="/logo-1.png"
             alt="Logo"
             className="w-12 h-12 rounded-full bg-white p-2"
           />

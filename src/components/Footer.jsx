@@ -32,7 +32,7 @@ function Footer() {
             © {new Date().getFullYear()} Tu Empresa. Todos los derechos reservados.
           </p>
           <p className="text-sm text-gray-500 mt-2">
-            Desarrollado por [Nombre del Desarrollador]
+            Desarrollado por @leotechcoder
           </p>
         </div>
       </div>

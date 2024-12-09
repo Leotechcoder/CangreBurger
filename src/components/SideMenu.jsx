@@ -34,7 +34,7 @@ function SideMenu({ isOpen, onClose }) {
           </button>
           
           <div className="mt-8 text-center">
-            <img src="/placeholder.svg" alt="Logo" className="w-20 h-20 mx-auto rounded-full bg-pink-600 p-2" />
+            <img src="/logo-1.png" alt="Logo" className="w-20 h-20 mx-auto rounded-full bg-pink-600 p-2" />
             <h2 className="mt-4 text-2xl font-bold text-pink-600">Tu Empresa</h2>
           </div>
           
