@@ -46,6 +46,7 @@ const initialProducts = [
   { id: 30, name: "Lomito al Roquefort", description: "Lomo, queso roquefort, rúcula", price: 9200, image: "/background-5.avif", category: "Lomito" },
 ];
 
+
 function App() {
   const [selectedCategory, setSelectedCategory] = useState('Todo');
   const [cartItems, setCartItems] = useState([]);
@@ -54,13 +55,27 @@ function App() {
   const [favorites, setFavorites] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
 
   const handleAddToCart = (item) => {
-    setCartItems((prevItems) => [...prevItems, item]);
+    setCartItems((prevItems) => [...prevItems, { ...item, cartId: Date.now() }]);
+  };
+
+  const handleUpdateCart = (updatedItem) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.cartId === updatedItem.cartId ? updatedItem : item
+      )
+    );
+    setEditingProduct(null);
+  };
+
+  const handleRemoveFromCart = (cartId) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.cartId !== cartId));
   };
 
   const handleSearch = (searchTerm) => {
@@ -90,6 +105,10 @@ function App() {
     setSelectedProduct(product);
   };
 
+  const handleEditCartItem = (item) => {
+    setEditingProduct(item);
+  };
+
   useEffect(() => {
     if (selectedCategory === 'Todo') {
       setProducts(initialProducts);
@@ -100,7 +119,7 @@ function App() {
   }, [selectedCategory]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Header
         onSearch={handleSearch}
         favorites={favorites}
@@ -124,15 +143,25 @@ function App() {
           onCartClick={() => setIsCartOpen(true)}
         />
         {isCartOpen && (
-          <CartModal items={cartItems} onClose={() => setIsCartOpen(false)} />
+          <CartModal
+            items={cartItems}
+            onClose={() => setIsCartOpen(false)}
+            onEditItem={handleEditCartItem}
+            onRemoveFromCart={handleRemoveFromCart}
+          />
         )}
-        {selectedProduct && (
+        {(selectedProduct || editingProduct) && (
           <ProductModal
-            product={selectedProduct}
-            onClose={() => setSelectedProduct(null)}
+            product={editingProduct || selectedProduct}
+            onClose={() => {
+              setSelectedProduct(null);
+              setEditingProduct(null);
+            }}
             onAddToCart={handleAddToCart}
-            isFavorite={favorites.some(fav => fav.id === selectedProduct.id)}
-            onToggleFavorite={() => handleToggleFavorite(selectedProduct.id)}
+            onUpdateCart={handleUpdateCart}
+            isEditing={!!editingProduct}
+            isFavorite={favorites.some(fav => fav.id === (editingProduct || selectedProduct).id)}
+            onToggleFavorite={() => handleToggleFavorite((editingProduct || selectedProduct).id)}
           />
         )}
       </main>
@@ -142,4 +171,3 @@ function App() {
 }
 
 export default App;
-

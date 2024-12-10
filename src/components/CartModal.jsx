@@ -1,8 +1,52 @@
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Edit2, Trash2 } from 'lucide-react';
 
-function CartModal({ items, onClose }) {
+const pizzaSizes = ['Personal', 'Mediana', 'Familiar'];
+const extraToppings = ['Queso extra', 'Champiñones', 'Aceitunas', 'Cebolla', 'Pimiento'];
+const hamburgerExtras = ['Bacon', 'Huevo frito', 'Queso extra', 'Cebolla caramelizada'];
+const lomitoExtras = ['Huevo frito', 'Queso extra', 'Jamón', 'Panceta'];
+
+function CartModal({ items, onClose, onEditItem, onRemoveFromCart }) {
+  const [editingItem, setEditingItem] = useState(null);
+
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const getExtraOptions = (category) => {
+    switch (category) {
+      case 'Pizzas':
+        return extraToppings;
+      case 'Hamburguesas':
+        return hamburgerExtras;
+      case 'Lomito':
+        return lomitoExtras;
+      default:
+        return [];
+    }
+  };
+
+  const handleEditItem = (item) => {
+    onEditItem(item);
+  };
+
+
+  const renderItemDetails = (item) => (
+    <div className="flex-grow">
+      <h3 className="text-lg font-semibold">{item.name}</h3>
+      <p className="text-sm text-gray-600">{item.description}</p>
+      {item.size && <p className="text-sm">Tamaño: {item.size}</p>}
+      {item.extras && item.extras.length > 0 && (
+        <p className="text-sm">Extras: {item.extras.join(", ")}</p>
+      )}
+      {item.additionalComments && (
+        <p className="text-sm">Comentarios: {item.additionalComments}</p>
+      )}
+      <p className="text-sm">Cantidad: {item.quantity}</p>
+      <p className="text-sm font-semibold">
+        Precio: ${(item.price * item.quantity).toFixed(2)}
+      </p>
+    </div>
+  );
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -19,24 +63,26 @@ function CartModal({ items, onClose }) {
         ) : (
           <>
             {items.map((item) => (
-              <div key={item.id} className="mb-4 flex items-center border-b pb-4">
+              <div key={item.cartId} className="mb-4 flex items-start border-b pb-4">
                 <img
                   src={item.image}
                   alt={item.name}
                   className="mr-4 h-20 w-20 rounded-lg object-cover"
                 />
-                <div className="flex-grow">
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
-                  <p className="text-sm text-gray-600">{item.description}</p>
-                  {item.size && <p className="text-sm">Tamaño: {item.size}</p>}
-                  {item.type && <p className="text-sm">Tipo: {item.type}</p>}
-                  {item.toppings && item.toppings.length > 0 && (
-                    <p className="text-sm">Toppings: {item.toppings.join(", ")}</p>
-                  )}
-                  <p className="text-sm">Cantidad: {item.quantity}</p>
-                  <p className="text-sm font-semibold">
-                    Precio: ${(item.price * item.quantity).toFixed(2)}
-                  </p>
+                {renderItemDetails(item)}
+                <div className="ml-2 flex flex-col gap-2">
+                  <button
+                    onClick={() => handleEditItem(item)}
+                    className="rounded bg-blue-500 p-2 text-white hover:bg-blue-600"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => onRemoveFromCart(item.cartId)}
+                    className="rounded bg-red-500 p-2 text-white hover:bg-red-600"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                 </div>
               </div>
             ))}

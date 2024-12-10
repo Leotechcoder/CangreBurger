@@ -1,21 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-function ProductModal({ product, onClose, onAddToCart }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || "");
-  const [selectedType, setSelectedType] = useState(product.types?.[0] || "");
-  const [selectedToppings, setSelectedToppings] = useState([]);
+const pizzaSizes = ['Personal', 'Mediana', 'Familiar'];
+const extraToppings = ['Queso extra', 'Champiñones', 'Aceitunas', 'Cebolla', 'Pimiento'];
+const hamburgerExtras = ['Bacon', 'Huevo frito', 'Queso extra', 'Cebolla caramelizada'];
+const lomitoExtras = ['Huevo frito', 'Queso extra', 'Jamón', 'Panceta'];
+
+function ProductModal({ product, onClose, onAddToCart, onUpdateCart, isEditing }) {
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedExtras, setSelectedExtras] = useState([]);
+  const [additionalComments, setAdditionalComments] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = () => {
-    onAddToCart({
+  useEffect(() => {
+    if (product.category === 'Pizzas') {
+      setSelectedSize(product.size || pizzaSizes[0]);
+    }
+    if (product.extras) {
+      setSelectedExtras(product.extras);
+    }
+    if (product.additionalComments) {
+      setAdditionalComments(product.additionalComments);
+    }
+    if (product.quantity) {
+      setQuantity(product.quantity);
+    }
+  }, [product]);
+
+  const handleSubmit = () => {
+    const updatedItem = {
       ...product,
       size: selectedSize,
-      type: selectedType,
-      toppings: selectedToppings,
-      quantity
-    });
+      extras: selectedExtras,
+      additionalComments,
+      quantity,
+    };
+    if (isEditing) {
+      onUpdateCart(updatedItem);
+    } else {
+      onAddToCart(updatedItem);
+    }
     onClose();
+  };
+
+  const toggleExtra = (extra) => {
+    setSelectedExtras(prev =>
+      prev.includes(extra)
+        ? prev.filter(e => e !== extra)
+        : [...prev, extra]
+    );
+  };
+
+  const getExtraOptions = () => {
+    switch (product.category) {
+      case 'Pizzas':
+        return extraToppings;
+      case 'Hamburguesas':
+        return hamburgerExtras;
+      case 'Lomito':
+        return lomitoExtras;
+      default:
+        return [];
+    }
   };
 
   return (
@@ -37,60 +83,58 @@ function ProductModal({ product, onClose, onAddToCart }) {
         <p className="mb-4 text-xl font-bold text-pink-600">
           ${product.price.toFixed(2)}
         </p>
-        {product.sizes && (
+
+        {product.category === 'Pizzas' && (
           <div className="mb-4">
             <h3 className="mb-2 font-semibold">Tamaño:</h3>
-            <select
-              value={selectedSize}
-              onChange={(e) => setSelectedSize(e.target.value)}
-              className="w-full rounded border p-2"
-            >
-              {product.sizes.map((size) => (
-                <option key={size} value={size}>
+            <div className="flex flex-wrap gap-2">
+              {pizzaSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`rounded-full px-3 py-1 text-sm ${
+                    selectedSize === size
+                      ? 'bg-pink-600 text-white'
+                      : 'bg-gray-200 text-gray-800'
+                  }`}
+                >
                   {size}
-                </option>
+                </button>
               ))}
-            </select>
+            </div>
           </div>
         )}
-        {product.types && (
-          <div className="mb-4">
-            <h3 className="mb-2 font-semibold">Tipo:</h3>
-            <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full rounded border p-2"
-            >
-              {product.types.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-        {product.toppings && (
-          <div className="mb-4">
-            <h3 className="mb-2 font-semibold">Toppings:</h3>
-            {product.toppings.map((topping) => (
-              <label key={topping} className="mb-2 flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedToppings.includes(topping)}
-                  onChange={() => {
-                    setSelectedToppings((prev) =>
-                      prev.includes(topping)
-                        ? prev.filter((t) => t !== topping)
-                        : [...prev, topping]
-                    );
-                  }}
-                  className="mr-2"
-                />
-                {topping}
-              </label>
+
+
+        <div className="mb-4">
+          <h3 className="mb-2 font-semibold">Extras:</h3>
+          <div className="flex flex-wrap gap-2">
+            {getExtraOptions().map((extra) => (
+              <button
+                key={extra}
+                onClick={() => toggleExtra(extra)}
+                className={`rounded-full px-3 py-1 text-sm ${
+                  selectedExtras.includes(extra)
+                    ? 'bg-pink-600 text-white'
+                    : 'bg-gray-200 text-gray-800'
+                }`}
+              >
+                {extra}
+              </button>
             ))}
           </div>
-        )}
+        </div>
+
+        <div className="mb-4">
+          <h3 className="mb-2 font-semibold">Comentarios adicionales:</h3>
+          <textarea
+            value={additionalComments}
+            onChange={(e) => setAdditionalComments(e.target.value)}
+            className="w-full rounded border p-2"
+            rows="3"
+          />
+        </div>
+
         <div className="mb-4">
           <h3 className="mb-2 font-semibold">Cantidad:</h3>
           <input
@@ -101,11 +145,12 @@ function ProductModal({ product, onClose, onAddToCart }) {
             className="w-full rounded border p-2"
           />
         </div>
+
         <button
-          onClick={handleAddToCart}
+          onClick={handleSubmit}
           className="w-full rounded bg-pink-600 py-2 text-white hover:bg-pink-700"
         >
-          Agregar al carrito
+          {isEditing ? 'Actualizar producto' : 'Agregar al carrito'}
         </button>
       </div>
     </div>
