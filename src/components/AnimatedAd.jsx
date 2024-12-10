@@ -17,7 +17,7 @@ function AnimatedAd() {
   }, []);
 
   return (
-    <div className="relative h-28 overflow-hidden bg-black">
+    <div className="relative h-28 overflow-hidden bg-zinc-900">
       {adImages.map((image, index) => (
         <img
           key={image}
