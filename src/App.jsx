@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import AnimatedAd from "./components/AnimatedAd"
 import HeroBanner from './components/HeroBanner';
 import CategoryMenu from './components/CategoryMenu';
 import ProductList from './components/ProductList';
@@ -128,6 +129,7 @@ function App() {
         searchResults={searchResults}
       />
       <main className="flex-grow">
+        <AnimatedAd/>
         <HeroBanner />
         <CategoryMenu onCategoryChange={handleCategoryChange} />
         <ProductList

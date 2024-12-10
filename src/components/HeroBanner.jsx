@@ -3,7 +3,7 @@ import { Facebook, Twitter, Instagram, Youtube, MessageCircle } from 'lucide-rea
 
 function HeroBanner() {
   return (
-    <div className="relative mt-16 overflow-hidden rounded-b-3xl bg-zinc-900 px-4 py-8">
+    <div className="relative overflow-hidden rounded-b-3xl bg-zinc-900 px-4 py-8">
       <div className="relative z-10">
         <h1 className="mb-2 text-4xl font-bold">
           <span className="text-red-600">THE</span>{" "}
