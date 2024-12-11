@@ -7,7 +7,7 @@ function FloatingButtons({ cartItemCount, onCartClick }) {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      setShowScrollTop(scrollPercentage > 35);
+      setShowScrollTop(scrollPercentage > 15);
     };
 
     window.addEventListener('scroll', handleScroll);
