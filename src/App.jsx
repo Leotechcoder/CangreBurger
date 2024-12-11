@@ -8,6 +8,9 @@ import FloatingButtons from './components/FloatingButtons';
 import CartModal from './components/CartModal';
 import ProductModal from './components/ProductModal';
 import Footer from './components/Footer';
+import FavoritesModal from './components/FavoritesModal';
+import SearchModal from './components/SearchModal';
+import SideMenu from './components/SideMenu';
 
 const initialProducts = [
   // Pizzas
@@ -52,11 +55,23 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState('Todo');
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [products, setProducts] = useState(initialProducts);
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+  const [products, setProducts] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
+
+  useEffect(() => {
+    // Simular una carga de datos
+    const timer = setTimeout(() => {
+      setProducts(initialProducts);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -81,7 +96,7 @@ function App() {
 
   const handleSearch = (searchTerm) => {
     if (searchTerm) {
-      const filteredProducts = initialProducts.filter(product =>
+      const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
@@ -96,7 +111,7 @@ function App() {
       if (prevFavorites.some(product => product.id === productId)) {
         return prevFavorites.filter(product => product.id !== productId);
       } else {
-        const productToAdd = initialProducts.find(product => product.id === productId);
+        const productToAdd = products.find(product => product.id === productId);
         return [...prevFavorites, productToAdd];
       }
     });
@@ -110,26 +125,18 @@ function App() {
     setEditingProduct(item);
   };
 
-  useEffect(() => {
-    if (selectedCategory === 'Todo') {
-      setProducts(initialProducts);
-    } else {
-      const filteredProducts = initialProducts.filter(product => product.category === selectedCategory);
-      setProducts(filteredProducts);
-    }
-  }, [selectedCategory]);
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header
-        onSearch={handleSearch}
+        onSearch={() => setIsSearchOpen(true)}
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
         onProductClick={handleProductClick}
         searchResults={searchResults}
+        onFavoritesClick={() => setIsFavoritesOpen(true)}
       />
       <main className="flex-grow">
-        <AnimatedAd/>
+        <AnimatedAd />
         <HeroBanner />
         <CategoryMenu onCategoryChange={handleCategoryChange} />
         <ProductList
@@ -150,6 +157,30 @@ function App() {
             onClose={() => setIsCartOpen(false)}
             onEditItem={handleEditCartItem}
             onRemoveFromCart={handleRemoveFromCart}
+          />
+        )}
+        {isFavoritesOpen && (
+          <FavoritesModal
+            favorites={favorites}
+            onClose={() => setIsFavoritesOpen(false)}
+            onProductClick={handleProductClick}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        )}
+        {isSearchOpen && (
+          <SearchModal
+            onClose={() => setIsSearchOpen(false)}
+            onSearch={handleSearch}
+            searchResults={searchResults}
+            onProductClick={handleProductClick}
+            favorites={favorites}
+            onToggleFavorite={handleToggleFavorite}
+          />
+        )}
+        {isSideMenuOpen && (
+          <SideMenu
+            isOpen={isSideMenuOpen}
+            onClose={() => setIsSideMenuOpen(false)}
           />
         )}
         {(selectedProduct || editingProduct) && (

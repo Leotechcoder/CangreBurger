@@ -15,7 +15,7 @@ function ProductCard({ id, name, description, price, oldPrice, image, bestSeller
         className="h-48 w-full rounded-2xl object-cover"
         onClick={onClick}
       />
-      <div className="mt-4">
+      <span className="mt-4" onClick={onclick}>
         <div className="flex justify-between items-center">
           <h3 className="text-xl font-semibold text-gray-800">{name}</h3>
           <button
@@ -36,7 +36,7 @@ function ProductCard({ id, name, description, price, oldPrice, image, bestSeller
             </span>
           )}
         </div>
-      </div>
+      </span>
     </div>
   );
 }

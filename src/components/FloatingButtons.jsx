@@ -1,14 +1,43 @@
-import React from 'react';
-import { ShoppingCart } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, ArrowUp } from 'lucide-react';
 
 function FloatingButtons({ cartItemCount, onCartClick }) {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      setShowScrollTop(scrollPercentage > 35);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <div className="fixed bottom-4 right-4 flex flex-col gap-4">
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-gray-800 text-white shadow-lg transition-all hover:bg-gray-700"
+          aria-label="Volver arriba"
+        >
+          <ArrowUp className="h-6 w-6" />
+        </button>
+      )}
       <a
         href="https://wa.me/yourphonenumber"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-lg transition-all hover:bg-green-600"
+        aria-label="Contactar por WhatsApp"
       >
         <svg
           className="h-8 w-8"
@@ -21,7 +50,8 @@ function FloatingButtons({ cartItemCount, onCartClick }) {
       </a>
       <button
         onClick={onCartClick}
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-pink-600 text-white shadow-lg"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-pink-600 text-white shadow-lg transition-all hover:bg-pink-700"
+        aria-label="Abrir carrito de compras"
       >
         <ShoppingCart className="h-6 w-6" />
         {cartItemCount > 0 && (

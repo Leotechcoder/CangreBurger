@@ -1,8 +1,10 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import ProductCard from './ProductCard';
+import { useBackButton } from '../hooks/useBackButton';
 
 function FavoritesModal({ favorites, onClose, onProductClick, onToggleFavorite }) {
+  useBackButton(true, onClose);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg bg-white p-6">

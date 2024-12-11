@@ -4,10 +4,10 @@ import SideMenu from './SideMenu';
 import SearchModal from './SearchModal';
 import FavoritesModal from './FavoritesModal';
 
-function Header({ onSearch, favorites, onToggleFavorite, onProductClick, searchResults }) {
+function Header({ onSearch, favorites, onToggleFavorite, onProductClick, searchResults, onFavoritesClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false);
+  //const [isFavoritesOpen, setIsFavoritesOpen] = useState(false); //Removed
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -24,7 +24,7 @@ function Header({ onSearch, favorites, onToggleFavorite, onProductClick, searchR
           />
         </a>
         <div className="flex items-center gap-4">
-          <button className="text-white" onClick={() => setIsFavoritesOpen(true)}>
+          <button className="text-white" onClick={onFavoritesClick}>
             <Heart className={`h-6 w-6 ${favorites.length > 0 ? 'fill-current' : ''}`} />
           </button>
           <button className="text-white" onClick={() => setIsSearchOpen(true)}>
@@ -46,14 +46,7 @@ function Header({ onSearch, favorites, onToggleFavorite, onProductClick, searchR
           onToggleFavorite={onToggleFavorite}
         />
       )}
-      {isFavoritesOpen && (
-        <FavoritesModal
-          favorites={favorites}
-          onClose={() => setIsFavoritesOpen(false)}
-          onProductClick={onProductClick}
-          onToggleFavorite={onToggleFavorite}
-        />
-      )}
+      {/* Removed FavoritesModal */}
     </header>
   );
 }

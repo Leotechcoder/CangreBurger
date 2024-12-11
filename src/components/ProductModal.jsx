@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useBackButton } from '../hooks/useBackButton';
 
 const pizzaSizes = ['Personal', 'Mediana', 'Familiar'];
 const extraToppings = ['Queso extra', 'Champiñones', 'Aceitunas', 'Cebolla', 'Pimiento'];
@@ -63,6 +64,8 @@ function ProductModal({ product, onClose, onAddToCart, onUpdateCart, isEditing }
         return [];
     }
   };
+
+  useBackButton(true, onClose);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

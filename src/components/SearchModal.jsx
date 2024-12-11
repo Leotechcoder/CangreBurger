@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import ProductCard from './ProductCard';
+import { useBackButton } from '../hooks/useBackButton';
 
 function SearchModal({ onClose, onSearch, searchResults, onProductClick, favorites, onToggleFavorite }) {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,6 +15,8 @@ function SearchModal({ onClose, onSearch, searchResults, onProductClick, favorit
     setSearchTerm('');
     onClose();
   };
+
+  useBackButton(true, onClose);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

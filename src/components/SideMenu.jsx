@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { X, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { useBackButton } from '../hooks/useBackButton';
 
 function SideMenu({ isOpen, onClose }) {
   const menuRef = useRef(null);
@@ -19,6 +20,8 @@ function SideMenu({ isOpen, onClose }) {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClose]);
+
+  useBackButton(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -44,14 +47,14 @@ function SideMenu({ isOpen, onClose }) {
             </p>
           </div>
           
-          <nav className="mt-8">
+          {/* <nav className="mt-8">
             <ul className="space-y-4">
               <li><a href="/" className="text-gray-800 hover:text-pink-600">Inicio</a></li>
               <li><a href="/menu" className="text-gray-800 hover:text-pink-600">Menú</a></li>
               <li><a href="/about" className="text-gray-800 hover:text-pink-600">Sobre Nosotros</a></li>
               <li><a href="/contact" className="text-gray-800 hover:text-pink-600">Contacto</a></li>
             </ul>
-          </nav>
+          </nav> */}
           
           <div className="mt-8">
             <h3 className="text-lg font-semibold mb-2">Contáctanos</h3>

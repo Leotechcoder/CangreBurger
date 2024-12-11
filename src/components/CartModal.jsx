@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Edit2, Trash2 } from 'lucide-react';
+import { useBackButton } from '../hooks/useBackButton';
 
 const pizzaSizes = ['Personal', 'Mediana', 'Familiar'];
 const extraToppings = ['Queso extra', 'Champiñones', 'Aceitunas', 'Cebolla', 'Pimiento'];
@@ -28,6 +29,7 @@ function CartModal({ items, onClose, onEditItem, onRemoveFromCart }) {
     onEditItem(item);
   };
 
+  useBackButton(true, onClose);
 
   const renderItemDetails = (item) => (
     <div className="flex-grow">
